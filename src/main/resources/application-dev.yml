@@ -1,0 +1,29 @@
+spring:
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          smart-on-fhir:
+#            # 这些占位符需要在注册 EHR 沙盒应用后替换
+#            client-id: "YOUR_DEV_CLIENT_ID"
+#            client-secret: "YOUR_DEV_CLIENT_SECRET"
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#
+#fhir:
+#  server:
+#    # 使用 SMART Health IT 或 Logica 的测试沙盒地址
+#    base-url: "https://launch.smarthealthit.org/v/r4/fhir"
+
+ai:
+  provider:
+    # 填入你们选择的大模型端点，务必在提交代码前将其移入本地环境变量
+    api-url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
+    api-key: "AQ.Ab8RN6Jjdj7UABBQlhKYpF8ABp__FhHN02HbO8VQFo2VBxZe-A"
+
+logging:
+  level:
+    root: INFO
+    # 开启 HAPI FHIR 客户端日志，方便查看向沙盒发送的具体请求
+    ca.uhn.fhir.rest.client: DEBUG
+    org.example.comp3820: DEBUG

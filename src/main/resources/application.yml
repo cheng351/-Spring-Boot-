@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: dementia-risk-support-tool
+  profiles:
+    # 默认激活开发环境配置
+    active: dev
+
+server:
+  port: 8080

@@ -1,0 +1,23 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          smart-on-fhir:
+            client-id: ${PROD_CLIENT_ID}
+            client-secret: ${PROD_CLIENT_SECRET}
+
+fhir:
+  server:
+    # 最终演示阶段使用的机构 EHR 服务地址
+    base-url: ${PROD_FHIR_SERVER_URL}
+
+ai:
+  provider:
+    api-url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
+    api-key: "AQ.Ab8RN6Jjdj7UABBQlhKYpF8ABp__FhHN02HbO8VQFo2VBxZe-A"
+
+logging:
+  level:
+    root: WARN
+    org.example.comp3820: INFO
