@@ -27,60 +27,72 @@ public class AIAgentService {
     private RestTemplate restTemplate;
 
     public String generatePersonalizedGuidance(PatientProfileDto profile) {
-        // 1. 构建 Prompt，强调为帕金森病患者提供通俗易懂的建议
-        String systemPrompt = "You are a specialized AI assistant supporting Parkinson's disease patients. " +
-                "Review the provided clinical data (conditions and lifestyle observations). " +
-                "Generate a short, plain-language summary addressing modifiable dementia risk factors " +
-                "(e.g., sleep, physical activity). Avoid complex medical jargon.";
+        String systemPrompt = "You are a warm and caring assistant for someone with Parkinson's. " +
+                "Look at their complete health profile and give them 1 or 2 simple, everyday tips to keep their brain healthy. " +
+                "CRITICAL RULES: 1. Maximum 3 sentences. 2. Use simple language. 3. NO medical jargon. 4. NO bullet points.";
 
-        String userPrompt = String.format("Patient Data: Conditions: %s, Observations: %s",
-                profile.conditions().toString(), profile.riskFactorObservations().toString());
+        // 将 PatientProfileDto 的所有字段完整拼入
+        String userPrompt = String.format(
+                "Complete Patient Profile:\n- Patient ID: %s\n- Name: %s\n- Age: %d\n- Gender: %s\n- Ethnicity: %s\n- Conditions: %s\n- Observations/Risk Factors: %s",
+                profile.patientId(),
+                profile.name(),
+                profile.age(),
+                profile.gender(),
+                profile.ethnicity(),
+                profile.conditions().toString(),
+                profile.riskFactorObservations().toString()
+        );
 
-        // 为了简化向 Gemini API 发送的结构，我们可以将 System Prompt 和 User Prompt 组合起来
-        String fullPrompt = systemPrompt + "\n\n" + userPrompt;
+        return callGeminiApi(systemPrompt + "\n\n" + userPrompt);
+    }
 
+    public String answerCustomQuestion(PatientProfileDto profile, String userQuestion) {
+        String systemPrompt = "You are a friendly, reassuring assistant talking directly to a person with Parkinson's. " +
+                "Answer their question accurately using their complete profile data provided below. " +
+                "CRITICAL RULES: 1. Keep it under 4 short sentences. 2. Use simple words. 3. NO medical jargon.";
+
+        // 将 PatientProfileDto 的所有字段完整拼入上下文
+        String context = String.format(
+                "Complete Patient Profile:\n- Patient ID: %s\n- Name: %s\n- Age: %d\n- Gender: %s\n- Ethnicity: %s\n- Conditions: %s\n- Observations/Risk Factors: %s",
+                profile.patientId(),
+                profile.name(),
+                profile.age(),
+                profile.gender(),
+                profile.ethnicity(),
+                profile.conditions().toString(),
+                profile.riskFactorObservations().toString()
+        );
+
+        String fullPrompt = systemPrompt + "\n\n" + context + "\n\nPatient Question: " + userQuestion;
+
+        return callGeminiApi(fullPrompt);
+    }
+
+    private String callGeminiApi(String fullPrompt) {
         try {
-            // 2. 设置请求头 (Gemini 不需要 Bearer Auth，Key 放在 URL 中)
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // 3. 构造 Gemini 要求的标准 JSON 请求体
-            // 对应结构: { "contents": [ { "parts": [ { "text": "你的 Prompt" } ] } ] }
             Map<String, Object> part = new HashMap<>();
             part.put("text", fullPrompt);
-
             Map<String, Object> content = new HashMap<>();
             content.put("parts", List.of(part));
-
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("contents", List.of(content));
 
-            // 4. 将 API Key 拼接到 URL 后面
             String requestUrl = apiUrl + "?key=" + apiKey;
-
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
 
-            // 5. 发送请求并使用 JsonNode 解析响应
             JsonNode responseNode = restTemplate.postForObject(requestUrl, request, JsonNode.class);
 
-            // 6. 安全地提取生成的文本内容
             if (responseNode != null && responseNode.has("candidates")) {
-                return responseNode
-                        .path("candidates")
-                        .get(0)
-                        .path("content")
-                        .path("parts")
-                        .get(0)
-                        .path("text")
-                        .asText();
+                return responseNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
             } else {
-                return "分析暂不可用：AI 模型未返回有效结果。";
+                return "Analysis is not available at the moment. Please try again later.";
             }
-
         } catch (Exception e) {
-            // 捕获异常防止服务崩溃，并将错误输出到控制台方便调试
             e.printStackTrace();
-            return "无法连接到 AI 服务，请检查网络或 API 配置。错误信息: " + e.getMessage();
+            return "Unable to connect to the service. Please check your connection.";
         }
     }
 }

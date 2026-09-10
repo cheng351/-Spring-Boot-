@@ -7,6 +7,7 @@ public record PatientProfileDto(
         String name,
         int age,
         String gender,
+        String ethnicity,
         List<String> conditions,
         List<String> riskFactorObservations
 ) {}
