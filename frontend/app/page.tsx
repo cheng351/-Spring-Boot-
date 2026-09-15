@@ -9,10 +9,8 @@ import {
   ChevronRight,
   ClipboardPlus,
   Database,
-  Eye,
   HeartPulse,
   HelpCircle,
-  Info,
   LockKeyhole,
   MessageCircle,
   Mic,
@@ -125,6 +123,12 @@ export default function Home() {
   const [showProfile, setShowProfile] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return window.localStorage.getItem('mindstep-theme') === 'dark';
+    } catch { return false; }
+  });
   const [goalDone, setGoalDone] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [question, setQuestion] = useState('');
@@ -132,6 +136,13 @@ export default function Home() {
   const [listening, setListening] = useState(false);
   const [announcement, setAnnouncement] = useState('');
   const messageEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
+    try {
+      window.localStorage.setItem('mindstep-theme', darkMode ? 'dark' : 'light');
+    } catch { /* storage unavailable - theme resets next visit */ }
+  }, [darkMode]);
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -266,7 +277,6 @@ export default function Home() {
               <p className="eyebrow">Your wellbeing snapshot</p>
               <h2 id="factor-heading">Three things worth noticing</h2>
             </div>
-            <p className="section-note"><Info aria-hidden="true" size={18} /> Based on your recent synthetic record</p>
           </div>
           <div className="factor-grid">
             {factors.map((factor) => {
@@ -368,18 +378,6 @@ export default function Home() {
               <div className="encouragement">{goalDone ? 'Nice work — small changes count.' : 'Take it at your own pace. You can change this step at any time.'}</div>
             </section>
 
-            <section className="data-card" aria-labelledby="data-heading">
-              <div className="data-icon"><Database aria-hidden="true" size={24} /></div>
-              <h2 id="data-heading">Where this came from</h2>
-              <p>Your suggestions use four standard FHIR resources from a synthetic health record.</p>
-              <div className="resource-list" aria-label="FHIR resources used">
-                <span>Patient</span><span>Condition</span><span>Observation</span><span>CarePlan</span>
-              </div>
-              <button className="secondary-button" type="button" onClick={() => setShowProfile(true)}>
-                <Eye aria-hidden="true" size={20} /> View data used
-              </button>
-            </section>
-
             <section className="help-card">
               <HelpCircle aria-hidden="true" size={24} />
               <div><strong>Not sure what to do?</strong><p>Ask a caregiver or your healthcare professional to review this with you.</p></div>
@@ -424,6 +422,9 @@ export default function Home() {
               </button>
               <button type="button" onClick={() => setHighContrast((current) => !current)} aria-pressed={highContrast}>
                 <span><strong>Higher contrast</strong><small>Use stronger colours and borders</small></span><span className={`switch ${highContrast ? 'on' : ''}`} aria-hidden="true"><span /></span>
+              </button>
+              <button type="button" onClick={() => setDarkMode((current) => !current)} aria-pressed={darkMode}>
+                <span><strong>Dark mode</strong><small>Darker colours that are gentler on the eyes</small></span><span className={`switch ${darkMode ? 'on' : ''}`} aria-hidden="true"><span /></span>
               </button>
               <button type="button" onClick={readLatestAnswer}>
                 <span><strong>Read latest answer</strong><small>Hear MindStep’s latest reply aloud</small></span><Volume2 aria-hidden="true" size={23} />
