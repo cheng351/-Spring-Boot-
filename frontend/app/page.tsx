@@ -4,38 +4,21 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
   Activity,
   Brain,
-  Check,
   ChevronDown,
   ChevronRight,
   ClipboardPlus,
-  Database,
   HeartPulse,
   HelpCircle,
   LockKeyhole,
-  MessageCircle,
   Mic,
-  Moon,
   RotateCcw,
   Send,
   Settings2,
   ShieldCheck,
   Sparkles,
-  SunMedium,
   Volume2,
   X,
 } from 'lucide-react';
-
-type Factor = {
-  title: string;
-  resource: string;
-  detail: string;
-  note: string;
-  status: string;
-  tone: 'amber' | 'green' | 'blue';
-  summary: string;
-  action: string;
-  icon: typeof Moon;
-};
 
 type ChatMessage = { id: number; role: 'assistant' | 'user'; text: string };
 
@@ -52,42 +35,6 @@ type SpeechRecognitionInstance = {
   onend: () => void;
   start: () => void;
 };
-
-const factors: Factor[] = [
-  {
-    title: 'Sleep',
-    resource: 'Observation',
-    detail: '6 h 10 min last night',
-    note: 'A small change could help',
-    status: 'Worth attention',
-    tone: 'amber',
-    summary: 'Your sleep has been shorter than your usual pattern on four of the past seven nights.',
-    action: 'Try beginning your wind-down routine 20 minutes earlier tonight.',
-    icon: Moon,
-  },
-  {
-    title: 'Movement',
-    resource: 'Observation',
-    detail: '4,280 steps yesterday',
-    note: 'You are building momentum',
-    status: 'On track',
-    tone: 'green',
-    summary: 'You moved more on three days this week. Short, regular movement can support sleep and overall wellbeing.',
-    action: 'If it feels safe, add a gentle 10-minute walk after lunch.',
-    icon: Activity,
-  },
-  {
-    title: 'Mind & connection',
-    resource: 'CarePlan',
-    detail: '2 activities this week',
-    note: 'One more would meet your goal',
-    status: 'In progress',
-    tone: 'blue',
-    summary: 'Your care plan includes three enjoyable social or thinking activities each week.',
-    action: 'Call a friend or spend 15 minutes on a familiar puzzle this afternoon.',
-    icon: Brain,
-  },
-];
 
 const quickPrompts = [
   'How can I sleep better?',
@@ -118,7 +65,6 @@ function responseFor(question: string) {
 }
 
 export default function Home() {
-  const [selectedFactor, setSelectedFactor] = useState<Factor | null>(null);
   const [showAccess, setShowAccess] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [largeText, setLargeText] = useState(false);
@@ -129,7 +75,6 @@ export default function Home() {
       return window.localStorage.getItem('mindstep-theme') === 'dark';
     } catch { return false; }
   });
-  const [goalDone, setGoalDone] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [question, setQuestion] = useState('');
   const [thinking, setThinking] = useState(false);
@@ -147,7 +92,6 @@ export default function Home() {
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setSelectedFactor(null);
         setShowAccess(false);
         setShowProfile(false);
       }
@@ -241,7 +185,6 @@ export default function Home() {
         </a>
         <nav aria-label="Main navigation">
           <a className="nav-link active" href="#today">Today</a>
-          <a className="nav-link" href="#factors">My factors</a>
           <a className="nav-link" href="#ask">Ask MindStep</a>
         </nav>
         <div className="top-actions">
@@ -268,48 +211,6 @@ export default function Home() {
             <span className="status-dot" aria-hidden="true" />
             <span><strong>Health record connected</strong><small>Updated 9:14 am · View data</small></span>
             <ChevronRight aria-hidden="true" size={20} />
-          </button>
-        </section>
-
-        <section aria-labelledby="factor-heading" id="factors">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Your wellbeing snapshot</p>
-              <h2 id="factor-heading">Three things worth noticing</h2>
-            </div>
-          </div>
-          <div className="factor-grid">
-            {factors.map((factor) => {
-              const Icon = factor.icon;
-              return (
-                <article className={`factor-card ${factor.tone}`} key={factor.title}>
-                  <div className="factor-topline">
-                    <div className="factor-icon"><Icon aria-hidden="true" size={28} strokeWidth={2.2} /></div>
-                    <span className="factor-status">{factor.status}</span>
-                  </div>
-                  <h3>{factor.title}</h3>
-                  <p className="factor-detail">{factor.detail}</p>
-                  <p className="factor-note">{factor.note}</p>
-                  <button className="factor-open" type="button" onClick={() => setSelectedFactor(factor)}>
-                    View {factor.title.toLowerCase()} <ChevronRight aria-hidden="true" size={21} />
-                  </button>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="coach-card" aria-labelledby="coach-heading">
-          <div className="coach-intro">
-            <div className="coach-icon"><Sparkles aria-hidden="true" size={27} /></div>
-            <div>
-              <p className="eyebrow">Your next gentle step</p>
-              <h2 id="coach-heading">Would you like help with sleep?</h2>
-              <p>Based on your recent sleep observations, a simple evening routine may help. We can talk through it together.</p>
-            </div>
-          </div>
-          <button className="primary-button" type="button" onClick={() => { sendQuestion('How can I sleep better?'); document.querySelector('#ask')?.scrollIntoView({ behavior: 'smooth' }); }}>
-            <MessageCircle aria-hidden="true" size={22} /> Talk about my sleep
           </button>
         </section>
 
@@ -366,18 +267,6 @@ export default function Home() {
           </article>
 
           <aside className="side-column">
-            <section className="plan-card" aria-labelledby="plan-heading">
-              <div className="plan-title-row">
-                <span className="plan-icon"><SunMedium aria-hidden="true" size={24} /></span>
-                <div><p className="eyebrow">Today</p><h2 id="plan-heading">One small step</h2></div>
-              </div>
-              <button className={`goal-check${goalDone ? ' done' : ''}`} type="button" onClick={() => { setGoalDone((current) => !current); setAnnouncement(goalDone ? 'Step marked as not done.' : 'Great work. Step marked as done.'); }} aria-pressed={goalDone}>
-                <span className="check-box" aria-hidden="true">{goalDone && <Check size={22} strokeWidth={3} />}</span>
-                <span><strong>Begin winding down 20 minutes earlier</strong><small>Suggested from your sleep pattern</small></span>
-              </button>
-              <div className="encouragement">{goalDone ? 'Nice work — small changes count.' : 'Take it at your own pace. You can change this step at any time.'}</div>
-            </section>
-
             <section className="help-card">
               <HelpCircle aria-hidden="true" size={24} />
               <div><strong>Not sure what to do?</strong><p>Ask a caregiver or your healthcare professional to review this with you.</p></div>
@@ -391,23 +280,6 @@ export default function Home() {
           <p><LockKeyhole aria-hidden="true" size={16} /> No health information is saved by this front-end demo.</p>
         </footer>
       </main>
-
-      {selectedFactor && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedFactor(null); }}>
-          <section className="modal-card" role="dialog" aria-modal="true" aria-labelledby="factor-dialog-title">
-            <button className="modal-close" type="button" onClick={() => setSelectedFactor(null)} aria-label="Close factor details"><X aria-hidden="true" size={23} /></button>
-            <div className={`dialog-factor-icon ${selectedFactor.tone}`}><selectedFactor.icon aria-hidden="true" size={31} /></div>
-            <p className="eyebrow">{selectedFactor.status}</p>
-            <h2 id="factor-dialog-title">Your {selectedFactor.title.toLowerCase()}</h2>
-            <p className="dialog-lead">{selectedFactor.summary}</p>
-            <div className="action-callout"><strong>A gentle next step</strong><p>{selectedFactor.action}</p></div>
-            <div className="source-row"><Database aria-hidden="true" size={18} /><span>Source: FHIR {selectedFactor.resource} · synthetic record</span></div>
-            <button className="primary-button dark" type="button" onClick={() => { setSelectedFactor(null); sendQuestion(`Tell me more about ${selectedFactor.title.toLowerCase()}`); document.querySelector('#ask')?.scrollIntoView({ behavior: 'smooth' }); }}>
-              Ask MindStep about this <ChevronRight aria-hidden="true" size={20} />
-            </button>
-          </section>
-        </div>
-      )}
 
       {showAccess && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowAccess(false); }}>
