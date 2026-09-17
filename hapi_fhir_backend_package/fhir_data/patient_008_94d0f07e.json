@@ -1,0 +1,944 @@
+{
+  "resourceType": "Bundle",
+  "id": "0ef8cca3-5abe-4ed5-9fe4-11d55b42de35",
+  "meta": {
+    "lastUpdated": "2026-09-04T00:00:00Z",
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
+    ]
+  },
+  "type": "transaction",
+  "timestamp": "2026-09-04T00:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:94d0f07e-0d4a-48c6-b0d4-750ee8d5e979",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "94d0f07e-0d4a-48c6-b0d4-750ee8d5e979",
+        "text": {
+          "status": "generated",
+          "div": "<div>Jessica Johnson</div>"
+        },
+        "identifier": [
+          {
+            "system": "urn:synthetic:pd-study",
+            "value": "94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Johnson",
+            "given": [
+              "Jessica"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1954-04-08",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+            "extension": [
+              {
+                "url": "text",
+                "valueString": "Asian"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f8ed7f88-6fd2-4739-8404-2d57a0c6bb90",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "f8ed7f88-6fd2-4739-8404-2d57a0c6bb90",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Initial Parkinson's disease diagnosis"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "period": {
+          "start": "2021-08-01T09:00:00Z",
+          "end": "2021-08-01T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:62d119c7-2d58-4567-92c4-9b03fe5f0768",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "62d119c7-2d58-4567-92c4-9b03fe5f0768",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49049000",
+              "display": "Parkinson's disease"
+            }
+          ],
+          "text": "Parkinson's disease"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2021-08-01",
+        "recordedDate": "2021-08-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/62d119c7-2d58-4567-92c4-9b03fe5f0768"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:11314ed3-c58b-4129-a155-736ea95d0173",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "11314ed3-c58b-4129-a155-736ea95d0173",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "80399-1",
+              "display": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+            }
+          ],
+          "text": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "effectiveDateTime": "2021-08-01",
+        "issued": "2021-08-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 24,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/11314ed3-c58b-4129-a155-736ea95d0173"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4ea5c49d-6926-42a3-88ac-fcd0db49246b",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "4ea5c49d-6926-42a3-88ac-fcd0db49246b",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "effectiveDateTime": "2021-08-01",
+        "issued": "2021-08-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 25,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Possible MCI"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/4ea5c49d-6926-42a3-88ac-fcd0db49246b"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b75242d3-21f1-4860-b5a1-9474a8a1051b",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "b75242d3-21f1-4860-b5a1-9474a8a1051b",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1736854",
+              "display": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+            }
+          ],
+          "text": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "authoredOn": "2021-08-01",
+        "dosageInstruction": [
+          {
+            "text": "Take as directed",
+            "timing": {
+              "repeat": {
+                "frequency": 3,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "MedicationRequest/b75242d3-21f1-4860-b5a1-9474a8a1051b"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:49d67f8f-551d-426f-b827-c4caead5609b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "49d67f8f-551d-426f-b827-c4caead5609b",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44169009",
+              "display": "Loss of sense of smell (hyposmia)"
+            }
+          ],
+          "text": "Loss of sense of smell (hyposmia)"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2017-12-26",
+        "recordedDate": "2017-12-26"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/49d67f8f-551d-426f-b827-c4caead5609b"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:de914ede-a3d2-4a84-b01f-e745c56be8d1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "de914ede-a3d2-4a84-b01f-e745c56be8d1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709186000",
+              "display": "Rapid eye movement sleep behavior disorder"
+            }
+          ],
+          "text": "Rapid eye movement sleep behavior disorder"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2018-02-11",
+        "recordedDate": "2018-02-11"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/de914ede-a3d2-4a84-b01f-e745c56be8d1"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8f0f54ac-fa2d-4b5f-a9bd-ccb91b077c1a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "8f0f54ac-fa2d-4b5f-a9bd-ccb91b077c1a",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "35489007",
+              "display": "Depressive disorder"
+            }
+          ],
+          "text": "Depressive disorder"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2021-08-01",
+        "recordedDate": "2021-08-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/8f0f54ac-fa2d-4b5f-a9bd-ccb91b077c1a"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:40cce795-1684-41eb-b47d-9e7338fa031c",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "40cce795-1684-41eb-b47d-9e7338fa031c",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "48544-4",
+              "display": "Geriatric Depression Scale short version total score"
+            }
+          ],
+          "text": "Geriatric Depression Scale short version total score"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "effectiveDateTime": "2021-08-01",
+        "issued": "2021-08-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 15,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/40cce795-1684-41eb-b47d-9e7338fa031c"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:dda2f812-db9c-411c-858a-b3469294ff2d",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "dda2f812-db9c-411c-858a-b3469294ff2d",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "28651003",
+              "display": "Orthostatic hypotension"
+            }
+          ],
+          "text": "Orthostatic hypotension"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2021-08-01",
+        "recordedDate": "2021-08-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/dda2f812-db9c-411c-858a-b3469294ff2d"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cc9bbc5c-7d89-4f7f-b261-19b08942058c",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "cc9bbc5c-7d89-4f7f-b261-19b08942058c",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "81247-9",
+              "display": "Master HL7 genetic variant reporting panel"
+            }
+          ],
+          "text": "GBA gene mutation analysis"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "effectiveDateTime": "2021-08-01",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "10828004",
+              "display": "Positive"
+            }
+          ],
+          "text": "GBA mutation detected"
+        },
+        "note": [
+          {
+            "text": "GBA heterozygous variant associated with increased PDD risk"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/cc9bbc5c-7d89-4f7f-b261-19b08942058c"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:60804fc6-c4dd-475e-b491-23ee2a64dab5",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "60804fc6-c4dd-475e-b491-23ee2a64dab5",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386806002",
+              "display": "Mild cognitive disorder"
+            }
+          ],
+          "text": "Mild cognitive disorder"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/f8ed7f88-6fd2-4739-8404-2d57a0c6bb90"
+        },
+        "onsetDateTime": "2021-08-01",
+        "recordedDate": "2021-08-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/60804fc6-c4dd-475e-b491-23ee2a64dab5"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b0d1107a-babd-4ed8-a3b8-629bf33e900e",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "b0d1107a-babd-4ed8-a3b8-629bf33e900e",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Parkinson's disease follow-up"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "period": {
+          "start": "2022-08-01T09:00:00Z",
+          "end": "2022-08-01T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/b0d1107a-babd-4ed8-a3b8-629bf33e900e"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:eecc448c-ac70-437f-a09c-fc76bbd97ed3",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "eecc448c-ac70-437f-a09c-fc76bbd97ed3",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/b0d1107a-babd-4ed8-a3b8-629bf33e900e"
+        },
+        "effectiveDateTime": "2022-08-01",
+        "issued": "2022-08-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 23,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Possible MCI"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/eecc448c-ac70-437f-a09c-fc76bbd97ed3"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:64866b0c-9afc-404f-b820-aeb3de6c9133",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "64866b0c-9afc-404f-b820-aeb3de6c9133",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "7011001",
+              "display": "Hallucinations"
+            }
+          ],
+          "text": "Hallucinations"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/b0d1107a-babd-4ed8-a3b8-629bf33e900e"
+        },
+        "onsetDateTime": "2022-08-01",
+        "recordedDate": "2022-08-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/64866b0c-9afc-404f-b820-aeb3de6c9133"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:68f8a04c-e351-4e22-96f9-4f6474723852",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "68f8a04c-e351-4e22-96f9-4f6474723852",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Long-term Parkinson's disease assessment"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "period": {
+          "start": "2028-07-30T09:00:00Z",
+          "end": "2028-07-30T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/68f8a04c-e351-4e22-96f9-4f6474723852"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5d8f75f2-51b7-4d82-8776-de71b013421f",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "5d8f75f2-51b7-4d82-8776-de71b013421f",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "191449007",
+              "display": "Dementia associated with Parkinson's disease"
+            }
+          ],
+          "text": "Dementia associated with Parkinson's disease"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/68f8a04c-e351-4e22-96f9-4f6474723852"
+        },
+        "onsetDateTime": "2028-07-30",
+        "recordedDate": "2028-07-30"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/5d8f75f2-51b7-4d82-8776-de71b013421f"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1a55a48a-def7-4fbb-a99f-9a47d581455b",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "1a55a48a-def7-4fbb-a99f-9a47d581455b",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/68f8a04c-e351-4e22-96f9-4f6474723852"
+        },
+        "effectiveDateTime": "2028-07-30",
+        "issued": "2028-07-30T00:00:00Z",
+        "valueQuantity": {
+          "value": 15,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Dementia range"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/1a55a48a-def7-4fbb-a99f-9a47d581455b"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:da796d0a-cd66-4198-9c41-4c0526adcd9e",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "da796d0a-cd66-4198-9c41-4c0526adcd9e",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "80399-1",
+              "display": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+            }
+          ],
+          "text": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+        },
+        "subject": {
+          "reference": "Patient/94d0f07e-0d4a-48c6-b0d4-750ee8d5e979"
+        },
+        "encounter": {
+          "reference": "Encounter/68f8a04c-e351-4e22-96f9-4f6474723852"
+        },
+        "effectiveDateTime": "2028-07-30",
+        "issued": "2028-07-30T00:00:00Z",
+        "valueQuantity": {
+          "value": 44,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/da796d0a-cd66-4198-9c41-4c0526adcd9e"
+      }
+    }
+  ]
+}

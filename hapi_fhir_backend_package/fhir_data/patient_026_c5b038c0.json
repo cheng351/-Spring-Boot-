@@ -1,0 +1,752 @@
+{
+  "resourceType": "Bundle",
+  "id": "f3f22e4f-0d62-41d9-b62d-4a4a1a884837",
+  "meta": {
+    "lastUpdated": "2026-09-04T00:00:00Z",
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
+    ]
+  },
+  "type": "transaction",
+  "timestamp": "2026-09-04T00:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:c5b038c0-7f4c-454e-b0bd-4eca78f67cda",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "c5b038c0-7f4c-454e-b0bd-4eca78f67cda",
+        "text": {
+          "status": "generated",
+          "div": "<div>Linda Williams</div>"
+        },
+        "identifier": [
+          {
+            "system": "urn:synthetic:pd-study",
+            "value": "c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Williams",
+            "given": [
+              "Linda"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1963-08-22",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+            "extension": [
+              {
+                "url": "text",
+                "valueString": "White"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:58f5c2ff-1366-45d1-af31-710dce63c9b7",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "58f5c2ff-1366-45d1-af31-710dce63c9b7",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Initial Parkinson's disease diagnosis"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "period": {
+          "start": "2025-10-01T09:00:00Z",
+          "end": "2025-10-01T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0721ac68-d603-40b4-85dd-6e792b7e496e",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "0721ac68-d603-40b4-85dd-6e792b7e496e",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49049000",
+              "display": "Parkinson's disease"
+            }
+          ],
+          "text": "Parkinson's disease"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "onsetDateTime": "2025-10-01",
+        "recordedDate": "2025-10-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/0721ac68-d603-40b4-85dd-6e792b7e496e"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1eb9f7f4-0927-4501-83ef-c6b1cc1971f0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "1eb9f7f4-0927-4501-83ef-c6b1cc1971f0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "80399-1",
+              "display": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+            }
+          ],
+          "text": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "effectiveDateTime": "2025-10-01",
+        "issued": "2025-10-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 27,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/1eb9f7f4-0927-4501-83ef-c6b1cc1971f0"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:83b4132b-fa2e-40c8-8a52-b2489ed3a5d8",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "83b4132b-fa2e-40c8-8a52-b2489ed3a5d8",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "effectiveDateTime": "2025-10-01",
+        "issued": "2025-10-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 29,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Normal"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/83b4132b-fa2e-40c8-8a52-b2489ed3a5d8"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9713c4c7-b50f-4a65-8167-d9c87d61eb24",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "9713c4c7-b50f-4a65-8167-d9c87d61eb24",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1736854",
+              "display": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+            }
+          ],
+          "text": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "authoredOn": "2025-10-01",
+        "dosageInstruction": [
+          {
+            "text": "Take as directed",
+            "timing": {
+              "repeat": {
+                "frequency": 3,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "MedicationRequest/9713c4c7-b50f-4a65-8167-d9c87d61eb24"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:96ab67ac-878e-43ed-b05e-d29c32d2e11b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "96ab67ac-878e-43ed-b05e-d29c32d2e11b",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709186000",
+              "display": "Rapid eye movement sleep behavior disorder"
+            }
+          ],
+          "text": "Rapid eye movement sleep behavior disorder"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "onsetDateTime": "2021-11-17",
+        "recordedDate": "2021-11-17"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/96ab67ac-878e-43ed-b05e-d29c32d2e11b"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ad4fc3f5-1bfe-4369-9ced-5f05d2638893",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "ad4fc3f5-1bfe-4369-9ced-5f05d2638893",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "28651003",
+              "display": "Orthostatic hypotension"
+            }
+          ],
+          "text": "Orthostatic hypotension"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "onsetDateTime": "2025-10-01",
+        "recordedDate": "2025-10-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/ad4fc3f5-1bfe-4369-9ced-5f05d2638893"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8f526b60-cb33-4dfe-a605-840786d82b02",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "8f526b60-cb33-4dfe-a605-840786d82b02",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "81247-9",
+              "display": "Master HL7 genetic variant reporting panel"
+            }
+          ],
+          "text": "GBA gene mutation analysis"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/58f5c2ff-1366-45d1-af31-710dce63c9b7"
+        },
+        "effectiveDateTime": "2025-10-01",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "260385009",
+              "display": "Negative"
+            }
+          ],
+          "text": "GBA mutation not detected"
+        },
+        "note": []
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/8f526b60-cb33-4dfe-a605-840786d82b02"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f18ab879-cba9-40e2-ad62-ccce72567f9a",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "f18ab879-cba9-40e2-ad62-ccce72567f9a",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Parkinson's disease follow-up"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "period": {
+          "start": "2026-10-01T09:00:00Z",
+          "end": "2026-10-01T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/f18ab879-cba9-40e2-ad62-ccce72567f9a"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3c8ab0aa-9cbb-433a-bad1-6334d29ffaae",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "3c8ab0aa-9cbb-433a-bad1-6334d29ffaae",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/f18ab879-cba9-40e2-ad62-ccce72567f9a"
+        },
+        "effectiveDateTime": "2026-10-01",
+        "issued": "2026-10-01T00:00:00Z",
+        "valueQuantity": {
+          "value": 29,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Normal"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/3c8ab0aa-9cbb-433a-bad1-6334d29ffaae"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:22d72724-6659-4e1b-8712-1bc2d8e16df3",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "22d72724-6659-4e1b-8712-1bc2d8e16df3",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "7011001",
+              "display": "Hallucinations"
+            }
+          ],
+          "text": "Hallucinations"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/f18ab879-cba9-40e2-ad62-ccce72567f9a"
+        },
+        "onsetDateTime": "2026-10-01",
+        "recordedDate": "2026-10-01"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/22d72724-6659-4e1b-8712-1bc2d8e16df3"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8df8af66-d99e-4d18-9156-c19621ba6b25",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "8df8af66-d99e-4d18-9156-c19621ba6b25",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185347001",
+                "display": "Encounter for problem"
+              }
+            ],
+            "text": "Long-term Parkinson's disease assessment"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "period": {
+          "start": "2029-09-30T09:00:00Z",
+          "end": "2029-09-30T09:30:00Z"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/8df8af66-d99e-4d18-9156-c19621ba6b25"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f31ca0ab-bd7e-4703-9e2b-2bdad9684472",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "f31ca0ab-bd7e-4703-9e2b-2bdad9684472",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "191449007",
+              "display": "Dementia associated with Parkinson's disease"
+            }
+          ],
+          "text": "Dementia associated with Parkinson's disease"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/8df8af66-d99e-4d18-9156-c19621ba6b25"
+        },
+        "onsetDateTime": "2029-09-30",
+        "recordedDate": "2029-09-30"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/f31ca0ab-bd7e-4703-9e2b-2bdad9684472"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:be5c779a-5ddc-4827-a543-26d80edc3a29",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "be5c779a-5ddc-4827-a543-26d80edc3a29",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "72172-0",
+              "display": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+            }
+          ],
+          "text": "Montreal Cognitive Assessment (MoCA) [Interpretation]"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/8df8af66-d99e-4d18-9156-c19621ba6b25"
+        },
+        "effectiveDateTime": "2029-09-30",
+        "issued": "2029-09-30T00:00:00Z",
+        "valueQuantity": {
+          "value": 14,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        },
+        "interpretation": [
+          {
+            "text": "Dementia range"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/be5c779a-5ddc-4827-a543-26d80edc3a29"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c5e7dde0-7bde-47cf-88ec-821415a0acdc",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c5e7dde0-7bde-47cf-88ec-821415a0acdc",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "80399-1",
+              "display": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+            }
+          ],
+          "text": "Unified Parkinson's Disease Rating Scale (UPDRS) total score"
+        },
+        "subject": {
+          "reference": "Patient/c5b038c0-7f4c-454e-b0bd-4eca78f67cda"
+        },
+        "encounter": {
+          "reference": "Encounter/8df8af66-d99e-4d18-9156-c19621ba6b25"
+        },
+        "effectiveDateTime": "2029-09-30",
+        "issued": "2029-09-30T00:00:00Z",
+        "valueQuantity": {
+          "value": 32,
+          "unit": "{score}",
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c5e7dde0-7bde-47cf-88ec-821415a0acdc"
+      }
+    }
+  ]
+}
