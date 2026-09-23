@@ -4,17 +4,13 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.TokenClientParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import org.example.comp3820.domain.model.CognitiveEngagement;
 import org.example.comp3820.domain.model.PatientIdentity;
 import org.example.comp3820.domain.model.PatientSnapshot;
-import org.example.comp3820.domain.model.SleepRecord;
-import org.example.comp3820.domain.model.StepRecord;
+import org.example.comp3820.domain.model.ScoredAssessment;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CarePlan;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,9 +69,9 @@ public class HapiClinicalDataGateway implements ClinicalDataGateway {
                 ageOf(patient, LocalDate.now()),
                 patient.hasGender() ? patient.getGender().getDisplay() : "Unknown",
                 conditionsOf(patientId),
-                sleepOf(patientId),
-                stepsOf(patientId),
-                cognitiveEngagementOf(patientId));
+                scoresOf(patientId, Terminology.MOCA_TOTAL),
+                scoresOf(patientId, Terminology.UPDRS_PANEL),
+                scoresOf(patientId, Terminology.GDS15_TOTAL));
     }
 
     // --- resource reads -------------------------------------------------------------------
@@ -115,59 +112,27 @@ public class HapiClinicalDataGateway implements ClinicalDataGateway {
                 .findFirst();
     }
 
-    private List<SleepRecord> sleepOf(String patientId) {
-        Bundle bundle = search(Observation.class, patientId, Terminology.SLEEP_DURATION);
-        List<SleepRecord> records = new ArrayList<>();
-        for (Observation observation : resources(bundle, Observation.class)) {
-            Optional<LocalDate> date = effectiveDate(observation);
-            Optional<Double> hours = sleepHours(observation);
-            if (date.isPresent() && hours.isPresent()) {
-                records.add(new SleepRecord(date.get(), hours.get()));
-            }
-        }
-        return records;
-    }
-
-    private List<StepRecord> stepsOf(String patientId) {
-        Bundle bundle = search(Observation.class, patientId, Terminology.STEPS_24H);
-        List<StepRecord> records = new ArrayList<>();
+    /**
+     * Every recording of one scored instrument, oldest first.
+     *
+     * <p>Ordering is done here rather than relied on from the server: the sort is what makes a
+     * trend meaningful, and search result order is not guaranteed across FHIR servers.
+     * Observations without a date or a numeric value are dropped, since neither a trend nor a
+     * threshold can be applied to them.
+     */
+    private List<ScoredAssessment> scoresOf(String patientId, String loincCode) {
+        Bundle bundle = search(Observation.class, patientId, loincCode);
+        List<ScoredAssessment> scores = new ArrayList<>();
         for (Observation observation : resources(bundle, Observation.class)) {
             Optional<LocalDate> date = effectiveDate(observation);
             if (date.isPresent() && observation.hasValueQuantity()
                     && observation.getValueQuantity().hasValue()) {
-                records.add(new StepRecord(date.get(),
-                        observation.getValueQuantity().getValue().intValue()));
+                scores.add(new ScoredAssessment(date.get(),
+                        observation.getValueQuantity().getValue().doubleValue()));
             }
         }
-        return records;
-    }
-
-    /**
-     * Derives cognitive-engagement progress from the patient's active care plans.
-     *
-     * <p><strong>Assumption worth stating in the report:</strong> each activity on an active
-     * CarePlan counts as one item towards the weekly goal, and an activity counts as done when
-     * its detail status is {@code completed}. This is a modelling choice, not something FHIR
-     * dictates, since CarePlan has no notion of "per week". It needs confirming with the mentor.
-     */
-    private CognitiveEngagement cognitiveEngagementOf(String patientId) {
-        Bundle bundle = search(CarePlan.class, patientId, null);
-        int goal = 0;
-        int done = 0;
-        for (CarePlan plan : resources(bundle, CarePlan.class)) {
-            if (plan.getStatus() != CarePlan.CarePlanStatus.ACTIVE) {
-                continue;
-            }
-            for (CarePlan.CarePlanActivityComponent activity : plan.getActivity()) {
-                goal++;
-                if (activity.hasDetail() && activity.getDetail().hasStatus()
-                        && activity.getDetail().getStatus()
-                                == CarePlan.CarePlanActivityStatus.COMPLETED) {
-                    done++;
-                }
-            }
-        }
-        return new CognitiveEngagement(done, goal);
+        scores.sort(Comparator.comparing(ScoredAssessment::date));
+        return scores;
     }
 
     // --- search plumbing ------------------------------------------------------------------
@@ -289,46 +254,4 @@ public class HapiClinicalDataGateway implements ClinicalDataGateway {
         }
     }
 
-    /**
-     * Sleep duration in hours.
-     *
-     * <p>The unit is honoured rather than assumed: the same LOINC code is recorded in hours by
-     * some sources and in minutes by others, and treating 420 min as 420 h would put the card
-     * into a nonsensical state.
-     */
-    private Optional<Double> sleepHours(Observation observation) {
-        if (!observation.hasValueQuantity() || !observation.getValueQuantity().hasValue()) {
-            return Optional.empty();
-        }
-        Quantity quantity = observation.getValueQuantity();
-        double value = quantity.getValue().doubleValue();
-        String unit;
-        if (quantity.hasCode()) {
-            unit = quantity.getCode();
-        } else if (quantity.hasUnit()) {
-            unit = quantity.getUnit();
-        } else {
-            unit = "h";
-        }
-
-        switch (unit.toLowerCase()) {
-            case "min":
-            case "minute":
-            case "minutes":
-                return Optional.of(value / 60.0);
-            case "s":
-            case "sec":
-            case "second":
-            case "seconds":
-                return Optional.of(value / 3600.0);
-            case "h":
-            case "hr":
-            case "hour":
-            case "hours":
-                return Optional.of(value);
-            default:
-                log.warn("Unrecognised sleep duration unit '{}', assuming hours", unit);
-                return Optional.of(value);
-        }
-    }
 }

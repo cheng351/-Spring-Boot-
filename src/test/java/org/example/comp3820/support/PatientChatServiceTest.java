@@ -1,10 +1,8 @@
 package org.example.comp3820.support;
 
 import org.example.comp3820.ai.GeminiClient;
-import org.example.comp3820.domain.model.CognitiveEngagement;
 import org.example.comp3820.domain.model.PatientSnapshot;
-import org.example.comp3820.domain.model.SleepRecord;
-import org.example.comp3820.domain.model.StepRecord;
+import org.example.comp3820.domain.model.ScoredAssessment;
 import org.example.comp3820.fhir.ClinicalDataGateway;
 import org.example.comp3820.fhir.InMemoryClinicalDataGateway;
 import org.example.comp3820.model.ChatTurnDto;
@@ -49,73 +47,69 @@ class PatientChatServiceTest {
         ClinicalDataGateway gateway = new InMemoryClinicalDataGateway()
                 .withPatient(PATIENT_ID, snapshot);
         CapturingGemini gemini = new CapturingGemini();
-        new PatientChatService(gateway, gemini)
+        new PatientChatService(new RiskFactorService(gateway), gemini)
                 .answer(PATIENT_ID, "How am I doing?", history);
         return gemini.prompt;
     }
 
     private PatientSnapshot plainSnapshot() {
-        return snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0));
+        return snapshot(List.of(), List.of(), List.of());
     }
 
-    private PatientSnapshot snapshot(List<SleepRecord> sleep, List<StepRecord> steps,
-                                     CognitiveEngagement cognitive) {
+    private PatientSnapshot snapshot(List<ScoredAssessment> moca, List<ScoredAssessment> updrs,
+                                     List<ScoredAssessment> gds) {
         return new PatientSnapshot(72, "Female",
-                List.of("Parkinson's disease", "Depressive disorder"), sleep, steps, cognitive);
+                List.of("Parkinson's disease", "Depressive disorder"), moca, updrs, gds);
     }
 
     @Test
-    void carriesTheClinicalFactsTheRecordHolds() {
-        String prompt = promptFor(snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0)));
+    void carriesTheDiagnosesTheRecordHolds() {
+        String prompt = promptFor(plainSnapshot());
 
         assertThat(prompt)
-                .contains("Age: 72")
-                .contains("Gender: Female")
                 .contains("Parkinson's disease")
                 .contains("Depressive disorder")
                 .contains("How am I doing?");
     }
 
     @Test
-    void omitsSectionsTheRecordDoesNotHave() {
-        String prompt = promptFor(snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0)));
+    void omitsInstrumentsTheRecordDoesNotHave() {
+        String prompt = promptFor(plainSnapshot());
 
-        // Absent is not the same as empty: telling the model a list is empty invites it to
-        // fill the gap, whereas an absent heading is simply not a fact it was given.
+        // Absent is not the same as empty: an explicit "no data" line invites the model to
+        // speculate about why, whereas an absent heading is simply not a fact it was given.
         assertThat(prompt)
-                .doesNotContain("Most recent sleep")
-                .doesNotContain("Most recent step count")
-                .doesNotContain("Care plan activities")
+                .doesNotContain("MoCA")
+                .doesNotContain("UPDRS")
+                .doesNotContain("GDS")
                 .doesNotContain("[]");
     }
 
     @Test
-    void includesMeasurementsWhenTheyArePresent() {
+    void handsTheModelTheInterpretationRatherThanTheRawNumberAlone() {
         String prompt = promptFor(snapshot(
-                List.of(new SleepRecord(LocalDate.of(2026, 9, 16), 6.5)),
-                List.of(new StepRecord(LocalDate.of(2026, 9, 16), 4280)),
-                new CognitiveEngagement(2, 3)));
+                List.of(new ScoredAssessment(LocalDate.of(2025, 3, 31), 5)),
+                List.of(), List.of()));
 
+        // The banding is computed before the prompt exists. The model is told what the score
+        // means; it is never asked to work that out, because it would guess.
         assertThat(prompt)
-                .contains("Most recent sleep: 6.5 hours on 2026-09-16")
-                .contains("Most recent step count: 4,280 on 2026-09-16")
-                .contains("Care plan activities completed this week: 2 of 3");
+                .contains("5 out of 30")
+                .contains("screening threshold of 21")
+                .contains("Threshold source: Dalrymple-Alford");
     }
 
     @Test
     void formatsNumbersInEnglishRegardlessOfTheHostLocale() {
         // The machine this was written on runs a zh_CN locale, where an unqualified
-        // String.format produces different grouping and decimal separators. A prompt that
-        // reads "4.280" to a model trained on English is a different number.
+        // String.format produces different grouping and decimal separators.
         java.util.Locale original = java.util.Locale.getDefault();
         try {
             java.util.Locale.setDefault(java.util.Locale.GERMANY);
-            String prompt = promptFor(snapshot(
-                    List.of(new SleepRecord(LocalDate.of(2026, 9, 16), 6.5)),
-                    List.of(new StepRecord(LocalDate.of(2026, 9, 16), 4280)),
-                    new CognitiveEngagement(0, 0)));
+            String prompt = promptFor(snapshot(List.of(), List.of(
+                    new ScoredAssessment(LocalDate.of(2025, 3, 31), 1234)), List.of()));
 
-            assertThat(prompt).contains("6.5 hours").contains("4,280");
+            assertThat(prompt).contains("1,234");
         } finally {
             java.util.Locale.setDefault(original);
         }
@@ -123,9 +117,14 @@ class PatientChatServiceTest {
 
     @Test
     void tellsTheModelNotToInventValues() {
-        String prompt = promptFor(snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0)));
+        assertThat(promptFor(plainSnapshot()))
+                .contains("Never invent or estimate a number");
+    }
 
-        assertThat(prompt).contains("Never invent or estimate a number");
+    @Test
+    void tellsTheModelNotToDiagnose() {
+        assertThat(promptFor(plainSnapshot()))
+                .contains("Never tell them they have or do not have a condition");
     }
 
     // --- conversation memory ---------------------------------------------------------------

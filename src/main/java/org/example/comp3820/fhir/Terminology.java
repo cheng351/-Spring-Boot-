@@ -17,17 +17,58 @@ public final class Terminology {
     public static final String LOINC = "http://loinc.org";
     public static final String SNOMED = "http://snomed.info/sct";
 
+    // --- diagnoses -------------------------------------------------------------------------
+
     /** SNOMED CT: "Parkinson's disease" — the cohort's defining diagnosis. */
     public static final String PARKINSONS_DISEASE = "49049000";
 
-    /** LOINC: "Sleep duration". */
-    public static final String SLEEP_DURATION = "93832-4";
+    /** SNOMED CT: "Dementia associated with Parkinson's disease". */
+    public static final String PARKINSONS_DEMENTIA = "191449007";
 
-    /** LOINC: "Number of steps in 24 hour Measured". */
-    public static final String STEPS_24H = "41950-7";
+    /** SNOMED CT: "Mild cognitive disorder". */
+    public static final String MILD_COGNITIVE_DISORDER = "386806002";
 
-    /** LOINC: "Montreal Cognitive Assessment [MoCA]" — cognitive status, not engagement. */
-    public static final String MOCA = "72133-2";
+    /** SNOMED CT: "Rapid eye movement sleep behavior disorder" — a recognised prodromal marker. */
+    public static final String REM_SLEEP_BEHAVIOUR_DISORDER = "709186000";
+
+    /** SNOMED CT: "Depressive disorder". */
+    public static final String DEPRESSIVE_DISORDER = "35489007";
+
+    /** SNOMED CT: "Hallucinations". */
+    public static final String HALLUCINATIONS = "7011001";
+
+    /** SNOMED CT: "Orthostatic hypotension". */
+    public static final String ORTHOSTATIC_HYPOTENSION = "28651003";
+
+    /** SNOMED CT: "Loss of sense of smell (hyposmia)" — a recognised prodromal marker. */
+    public static final String HYPOSMIA = "44169009";
+
+    // --- scored assessments ----------------------------------------------------------------
+
+    /** LOINC: "Total score [MoCA]" — 0–30, lower is worse. */
+    public static final String MOCA_TOTAL = "72172-0";
+
+    /**
+     * LOINC: "Geriatric depression scale (GDS) short version total" — 0–15, higher is worse.
+     *
+     * <p>Not to be confused with {@code 48544-1}, which is the 30-item version's total.
+     */
+    public static final String GDS15_TOTAL = "48545-8";
+
+    /**
+     * LOINC: "Unified Parkinson's Disease Rating Scale (UPDRS) panel".
+     *
+     * <p><strong>A deliberate compromise.</strong> LOINC models the UPDRS as a panel of
+     * individual items and offers no code for a total score, so this panel code is carried on
+     * an Observation holding a scalar total, with the original wording kept in
+     * {@code CodeableConcept.text}. A consumer expecting panel structure will find no
+     * {@code hasMember} entries.
+     *
+     * <p>This is also why no severity banding is derived from it: the published cut-offs
+     * (Martínez-Martín et al. 2015) are defined per MDS-UPDRS part, not for a total, and the
+     * dataset records an unsplit total of an unspecified UPDRS version.
+     */
+    public static final String UPDRS_PANEL = "77717-7";
 
     private Terminology() {
     }

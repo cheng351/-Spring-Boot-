@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * <p>This is the test double that makes the layers above the gateway testable. Because it
  * implements the same interface the production code depends on, a test can exercise the whole
- * path from a patient id to a set of dashboard cards with no network, no sandbox account and no
+ * path from a patient id to a finished risk profile with no network, no sandbox account and no
  * fixture data to keep in sync with someone else's server.
  *
  * <p>It also raises the same two exceptions the real gateway does, so error handling can be
