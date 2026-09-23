@@ -60,7 +60,7 @@ public class PatientSupportController {
     public GuidanceResponseDto ask(@RequestBody ChatRequestDto request) {
         return new GuidanceResponseDto(
                 request.patientId(),
-                chatService.answer(request.patientId(), request.question()),
+                chatService.answer(request.patientId(), request.question(), request.history()),
                 Instant.now().toString());
     }
 }

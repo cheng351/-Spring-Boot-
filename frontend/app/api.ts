@@ -76,9 +76,28 @@ export function fetchOpeningMessage(patientId: string) {
   return request<GuidanceResponse>(`/api/support/guidance/${encodeURIComponent(patientId)}`);
 }
 
-export function askQuestion(patientId: string, question: string) {
+export type ChatTurn = { role: 'assistant' | 'user'; text: string };
+
+/** How many recent turns to send. The backend caps this again; this keeps the request small. */
+const HISTORY_LIMIT = 12;
+
+/**
+ * Asks a question, carrying the conversation so far.
+ *
+ * Without the history every request arrives at the model as the first thing ever said, so a
+ * follow-up such as "tell me more about that" has nothing to refer to.
+ *
+ * The turns sent here are the ones the model itself produced, so they contain no name or
+ * identifier. If a display name is ever substituted into an answer, do that when rendering —
+ * not in the stored messages — or it will travel back out in the next request.
+ */
+export function askQuestion(patientId: string, question: string, history: ChatTurn[] = []) {
   return request<GuidanceResponse>('/api/support/ask', {
     method: 'POST',
-    body: JSON.stringify({ patientId, question }),
+    body: JSON.stringify({
+      patientId,
+      question,
+      history: history.slice(-HISTORY_LIMIT),
+    }),
   });
 }

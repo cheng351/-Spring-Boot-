@@ -7,6 +7,7 @@ import org.example.comp3820.domain.model.SleepRecord;
 import org.example.comp3820.domain.model.StepRecord;
 import org.example.comp3820.fhir.ClinicalDataGateway;
 import org.example.comp3820.fhir.InMemoryClinicalDataGateway;
+import org.example.comp3820.model.ChatTurnDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -41,11 +42,20 @@ class PatientChatServiceTest {
     }
 
     private String promptFor(PatientSnapshot snapshot) {
+        return promptFor(snapshot, List.of());
+    }
+
+    private String promptFor(PatientSnapshot snapshot, List<ChatTurnDto> history) {
         ClinicalDataGateway gateway = new InMemoryClinicalDataGateway()
                 .withPatient(PATIENT_ID, snapshot);
         CapturingGemini gemini = new CapturingGemini();
-        new PatientChatService(gateway, gemini).answer(PATIENT_ID, "How am I doing?");
+        new PatientChatService(gateway, gemini)
+                .answer(PATIENT_ID, "How am I doing?", history);
         return gemini.prompt;
+    }
+
+    private PatientSnapshot plainSnapshot() {
+        return snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0));
     }
 
     private PatientSnapshot snapshot(List<SleepRecord> sleep, List<StepRecord> steps,
@@ -116,5 +126,55 @@ class PatientChatServiceTest {
         String prompt = promptFor(snapshot(List.of(), List.of(), new CognitiveEngagement(0, 0)));
 
         assertThat(prompt).contains("Never invent or estimate a number");
+    }
+
+    // --- conversation memory ---------------------------------------------------------------
+
+    @Test
+    void carriesEarlierTurnsSoAFollowUpHasSomethingToReferTo() {
+        String prompt = promptFor(plainSnapshot(), List.of(
+                new ChatTurnDto("user", "Why does my balance feel worse?"),
+                new ChatTurnDto("assistant", "Your record lists orthostatic hypotension.")));
+
+        assertThat(prompt)
+                .contains("The conversation so far:")
+                .contains("Them: Why does my balance feel worse?")
+                .contains("You: Your record lists orthostatic hypotension.");
+    }
+
+    @Test
+    void leavesOutTheTranscriptHeadingOnTheFirstQuestion() {
+        assertThat(promptFor(plainSnapshot())).doesNotContain("The conversation so far");
+    }
+
+    @Test
+    void keepsOnlyTheMostRecentTurns() {
+        List<ChatTurnDto> history = new java.util.ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            history.add(new ChatTurnDto("user", "question number " + i));
+        }
+
+        String prompt = promptFor(plainSnapshot(), history);
+
+        // An unbounded conversation would grow the prompt without limit.
+        assertThat(prompt).doesNotContain("question number 0")
+                .contains("question number 19");
+    }
+
+    @Test
+    void truncatesAnOverlongTurnRatherThanLettingItCrowdOutTheRest() {
+        String huge = "x".repeat(5000);
+        String prompt = promptFor(plainSnapshot(), List.of(new ChatTurnDto("user", huge)));
+
+        assertThat(prompt).doesNotContain(huge).contains("…");
+    }
+
+    @Test
+    void skipsBlankTurns() {
+        String prompt = promptFor(plainSnapshot(), List.of(
+                new ChatTurnDto("user", "   "),
+                new ChatTurnDto("assistant", "A real answer.")));
+
+        assertThat(prompt).contains("You: A real answer.").doesNotContain("Them: \n");
     }
 }

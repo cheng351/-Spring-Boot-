@@ -5,8 +5,10 @@ import org.example.comp3820.domain.model.PatientSnapshot;
 import org.example.comp3820.domain.model.SleepRecord;
 import org.example.comp3820.domain.model.StepRecord;
 import org.example.comp3820.fhir.ClinicalDataGateway;
+import org.example.comp3820.model.ChatTurnDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -23,6 +25,12 @@ import java.util.Locale;
  */
 @Service
 public class PatientChatService {
+
+    /** How many recent turns to carry. Enough for a follow-up to make sense, bounded on purpose. */
+    private static final int MAX_TURNS = 12;
+
+    /** Per-turn cap, so one very long message cannot crowd out the rest of the prompt. */
+    private static final int MAX_TURN_CHARS = 1000;
 
     private static final String RULES = """
             You are a warm, plain-spoken assistant talking directly to a person living with \
@@ -46,12 +54,53 @@ public class PatientChatService {
         this.gemini = gemini;
     }
 
-    /** Answers a free-text question about the patient's own record. */
-    public String answer(String patientId, String question) {
+    /**
+     * Answers a free-text question about the patient's own record.
+     *
+     * @param history earlier turns, oldest first. Without it a follow-up like "tell me more"
+     *                has nothing to refer to, because each request would otherwise arrive as
+     *                the first thing the patient had ever said.
+     */
+    public String answer(String patientId, String question, List<ChatTurnDto> history) {
         PatientSnapshot snapshot = gateway.fetchSnapshot(patientId);
         return gemini.complete(RULES
                 + "\n" + facts(snapshot)
+                + transcript(history)
                 + "\nTheir question: " + question.strip());
+    }
+
+    /** Convenience for a first question, with nothing said before it. */
+    public String answer(String patientId, String question) {
+        return answer(patientId, question, List.of());
+    }
+
+    /**
+     * Renders recent turns as a transcript.
+     *
+     * <p>Only the tail is kept. An unbounded conversation would grow the prompt without limit,
+     * and the older it gets the less it bears on what is being asked now.
+     */
+    private String transcript(List<ChatTurnDto> history) {
+        if (history == null || history.isEmpty()) {
+            return "";
+        }
+        List<ChatTurnDto> recent = history.size() > MAX_TURNS
+                ? history.subList(history.size() - MAX_TURNS, history.size())
+                : history;
+
+        StringBuilder out = new StringBuilder("\nThe conversation so far:\n");
+        for (ChatTurnDto turn : recent) {
+            String speaker = "user".equalsIgnoreCase(turn.role()) ? "Them" : "You";
+            String text = turn.text() == null ? "" : turn.text().strip();
+            if (text.isEmpty()) {
+                continue;
+            }
+            if (text.length() > MAX_TURN_CHARS) {
+                text = text.substring(0, MAX_TURN_CHARS) + "…";
+            }
+            out.append(speaker).append(": ").append(text).append('\n');
+        }
+        return out.toString();
     }
 
     /** A short opening message for when the patient first arrives. */

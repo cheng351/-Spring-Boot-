@@ -135,13 +135,17 @@ export default function Home() {
     const clean = text.trim();
     if (!clean || thinking) return;
 
+    // Snapshot the conversation before adding this question, so the history sent to the
+    // backend is what came before it rather than including it twice.
+    const history = messages.map(({ role, text }) => ({ role, text }));
+
     setMessages((current) => [...current, { id: Date.now(), role: 'user', text: clean }]);
     setQuestion('');
     setThinking(true);
     setAnnouncement('MindStep is preparing a response.');
 
     try {
-      const response = await askQuestion(PATIENT_ID, clean);
+      const response = await askQuestion(PATIENT_ID, clean, history);
       setMessages((current) => [...current,
         { id: Date.now() + 1, role: 'assistant', text: response.plainLanguageGuidance }]);
       setAnnouncement('MindStep has replied.');
@@ -157,7 +161,7 @@ export default function Home() {
     } finally {
       setThinking(false);
     }
-  }, [thinking]);
+  }, [thinking, messages]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
