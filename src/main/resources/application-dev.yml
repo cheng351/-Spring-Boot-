@@ -19,7 +19,7 @@ ai:
   provider:
     # 填入你们选择的大模型端点，务必在提交代码前将其移入本地环境变量
     api-url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
-    api-key: "AQ.Ab8RN6Jjdj7UABBQlhKYpF8ABp__FhHN02HbO8VQFo2VBxZe-A"
+    api-key: "AQ.Ab8RN6L1svMHyQs_BbDB2N_SdPZXhwErAKyKT0aS_UodsBYwYg"
 
 logging:
   level:

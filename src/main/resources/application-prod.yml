@@ -15,7 +15,7 @@ fhir:
 ai:
   provider:
     api-url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
-    api-key: "AQ.Ab8RN6Jjdj7UABBQlhKYpF8ABp__FhHN02HbO8VQFo2VBxZe-A"
+    api-key: "AQ.Ab8RN6L1svMHyQs_BbDB2N_SdPZXhwErAKyKT0aS_UodsBYwYg"
 
 logging:
   level:
