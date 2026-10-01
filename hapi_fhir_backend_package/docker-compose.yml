@@ -27,5 +27,28 @@ services:
       SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
 
+  smart-launcher:
+    image: aehrc/smart-launcher-v2:latest
+    container_name: mindstep-smart-launcher
+    restart: unless-stopped
+    depends_on:
+      - hapi-fhir
+    ports:
+      - "8090:80"
+    environment:
+      FHIR_SERVER_R4: "http://host.docker.internal:8080/fhir"
+
+  mindstep-ehr:
+    build:
+      context: ./smart-auth/SMART-EHR-Launcher
+      dockerfile: Dockerfile
+    image: mindstep-ehr-launcher
+    container_name: mindstep-ehr
+    restart: unless-stopped
+    depends_on:
+      - smart-launcher
+    ports:
+      - "8082:80"
+
 volumes:
   hapi-postgres-data:
