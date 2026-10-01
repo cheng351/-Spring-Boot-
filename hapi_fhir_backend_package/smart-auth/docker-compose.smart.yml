@@ -1,0 +1,9 @@
+services:
+  smart-launcher:
+    image: aehrc/smart-launcher-v2:latest
+    container_name: mindstep-smart-launcher
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    environment:
+      FHIR_SERVER_R4: "http://host.docker.internal:8080/fhir"
