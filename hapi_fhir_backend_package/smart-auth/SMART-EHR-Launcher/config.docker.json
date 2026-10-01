@@ -1,0 +1,24 @@
+{
+  "fhirServerUrl": "http://localhost:8090/v/r4/fhir",
+  "authRequired": false,
+  "launchParamConfigType": "proxy",
+  "formsServerUrl": "http://localhost:8080/fhir",
+  "appList": [
+    {
+      "appName": "MindStep",
+      "launchUrl": "http://localhost:3000/smart-launch",
+      "clientId": "mindstep",
+      "scope": "launch openid fhirUser patient/*.read",
+      "redirectUris": "http://localhost:3000/smart-callback",
+      "isEmbeddedView": false
+    }
+  ],
+  "defaultApp": {
+    "appName": "MindStep",
+    "launchUrl": "http://localhost:3000/smart-launch",
+    "clientId": "mindstep",
+    "scope": "launch openid fhirUser patient/*.read",
+    "redirectUris": "http://localhost:3000/smart-callback",
+    "isEmbeddedView": false
+  }
+}
