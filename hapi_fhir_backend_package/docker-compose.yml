@@ -28,7 +28,10 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
 
   smart-launcher:
-    image: aehrc/smart-launcher-v2:latest
+    build:
+      context: ./smart-auth/smart-launcher-custom
+      dockerfile: Dockerfile
+    image: mindstep-smart-launcher-custom
     container_name: mindstep-smart-launcher
     restart: unless-stopped
     depends_on:

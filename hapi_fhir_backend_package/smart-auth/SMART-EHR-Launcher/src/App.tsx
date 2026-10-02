@@ -41,6 +41,7 @@ import { ConfigFile } from "@/utils/configFile.ts";
 import ConfigChecker from "@/components/ConfigChecker.tsx";
 import { X } from "lucide-react";
 import PractitionerRoleContextProvider from "./contexts/PractitionerRoleContext";
+import PatientLogin from "@/pages/PatientLogin/PatientLogin";
 
 function App() {
   const { config, configIsLoading, configIsValid, loadConfigHasError } =
@@ -82,6 +83,10 @@ function App() {
 
   // config.json loaded and valid, proceed with the app
   const router = createBrowserRouter([
+    {
+      path: "/patient-login",
+      element: <PatientLogin />,
+    },
     {
       path: "authcallback",
       element: <AuthCallback />,
