@@ -9,6 +9,7 @@ support.
 ## System Architecture
 
 ``` text
+Staff / Clinician flow:
 SMART EHR Launcher (:8082)
         |
         | select Practitioner + Patient
@@ -16,6 +17,19 @@ SMART EHR Launcher (:8082)
 SMART Launcher / Proxy (:8090)
         |
         | SMART launch + patient context
+        v
+MindStep Frontend (:3000)
+
+Patient flow:
+MindStep Patient Launch (:3000/patient-launch)
+        |
+        v
+Custom SMART Launcher (:8090)
+        |
+        | select local Patient + simulated login
+        v
+SMART Callback (:3000/smart-callback)
+        |
         v
 MindStep Frontend (:3000)
         |
@@ -76,7 +90,9 @@ cd 2026-HighFive
 ## 2. Start the FHIR + SMART Docker Environment
 
 The unified Docker Compose configuration creates the local database,
-FHIR server, SMART proxy, and SMART EHR Launcher.
+FHIR server, custom SMART launcher/proxy, and SMART EHR Launcher. The
+custom SMART launcher is built from source stored in this repository, so
+teammates do not need to manually create or copy an additional container.
 
 ``` bash
 cd hapi_fhir_backend_package
@@ -93,9 +109,10 @@ This starts:
 
   HAPI FHIR R4                                  8080 FHIR data server
 
-  SMART Launcher /                              8090 SMART-enabled proxy
+  Custom SMART Launcher /                       8090 SMART-enabled proxy
   Proxy                                              to the local FHIR
-                                                     server
+                                                     server; also supports
+                                                     the patient login demo
 
   SMART EHR Launcher                            8082 Simulated EHR used to
                                                      select a patient and
@@ -117,10 +134,10 @@ mindstep-smart-launcher
 mindstep-ehr
 ```
 
-A teammate does **not** need the `mindstep-ehr-launcher` image in
-advance. `docker compose up -d --build` builds it automatically from the
-Dockerfile stored in the repository. Public Docker images are pulled
-automatically when required.
+A teammate does **not** need the `mindstep-ehr-launcher` or custom
+SMART launcher image in advance. `docker compose up -d --build` builds
+the repository-owned Docker images automatically from their Dockerfiles.
+Public Docker images are pulled automatically when required.
 
 ## 3. FHIR Test Data
 
@@ -200,7 +217,11 @@ through `npm install`; they do not need to install it globally.
 
 ## 7. Run MindStep Through SMART on FHIR
 
-For the SMART workflow, open:
+MindStep now supports two local SMART demonstration flows.
+
+### 7.1 Staff / Clinician EHR Launch
+
+Open:
 
 ``` text
 http://localhost:8082
@@ -217,13 +238,39 @@ Then:
 7.  MindStep uses that patient ID when requesting the patient's
     information.
 
-The SMART integration is implemented in the frontend through the SMART
-launch/callback pages and `fhirclient`.
+### 7.2 Patient Login / Patient-Facing Launch
+
+Open:
+
+``` text
+http://localhost:3000/patient-launch
+```
+
+The patient-facing route starts a SMART authorization flow through the
+custom SMART launcher on port 8090. The local patient login screen can
+select a Patient resource from the local HAPI FHIR dataset. After the
+simulated login/authorization completes, SMART redirects to:
+
+``` text
+http://localhost:3000/smart-callback
+```
+
+MindStep then uses the returned local patient ID. For example, the
+current demo can sign in as Jennifer Johnson and load her local FHIR
+record successfully.
+
+> **Important:** the patient login is a local prototype/simulation for
+> development and demonstration. It is not a production authentication
+> system and must not be treated as real patient identity verification.
+
+The SMART integration is implemented through `fhirclient`, the SMART
+launch/callback pages, and the custom local SMART launcher.
 
 Important frontend routes:
 
 ``` text
 /smart-launch
+/patient-launch
 /smart-callback
 ```
 
@@ -244,7 +291,7 @@ http://localhost:3000
 There is no EHR launch context, so the application uses its fallback
 patient ID. This mode is useful for frontend/backend development.
 
-### SMART launch
+### SMART staff launch
 
 Open the EHR Launcher:
 
@@ -252,12 +299,22 @@ Open the EHR Launcher:
 http://localhost:8082
 ```
 
-Select the patient and launch MindStep from there. In this mode the
-selected EHR patient context is passed to MindStep.
+Select the practitioner and patient and launch MindStep. The selected
+EHR patient context is passed to MindStep.
 
-This is the main reason for the SMART integration: in a real EHR
-workflow, the user should not have to manually type or hard-code the
-patient ID when opening an integrated application.
+### SMART patient launch
+
+Open:
+
+``` text
+http://localhost:3000/patient-launch
+```
+
+The custom SMART launcher presents the local patient-facing login flow
+and returns the selected patient's context to MindStep.
+
+In both SMART modes, the application receives patient context instead
+of requiring the user to manually type or hard-code a patient ID.
 
 ## 9. Important Local URLs
 
@@ -274,9 +331,13 @@ patient ID when opening an integrated application.
 
   SMART EHR Launcher                  `http://localhost:8082`
 
-  SMART proxy                         `http://localhost:8090`
+  Custom SMART launcher / proxy       `http://localhost:8090`
 
-  SMART configuration                 `http://localhost:8090/v/r4/fhir/.well-known/smart-configuration`
+  Patient-facing launch                `http://localhost:3000/patient-launch`
+
+  SMART callback                       `http://localhost:3000/smart-callback`
+
+  SMART configuration                  `http://localhost:8090/v/r4/fhir/.well-known/smart-configuration`
   -------------------------------------------------------------------------------------------------------
 
 ## 10. Normal Startup Order
@@ -288,8 +349,8 @@ After the first setup, the recommended order is:
 2. docker compose up -d --build
 3. Start Spring Boot (:8081)
 4. Start the frontend (:3000)
-5. Open SMART EHR Launcher (:8082)
-6. Select a patient and Launch MindStep
+5. For staff flow: open SMART EHR Launcher (:8082)
+6. For patient flow: open MindStep /patient-launch (:3000/patient-launch)
 ```
 
 For normal day-to-day use, `--build` is not always necessary:
@@ -298,8 +359,8 @@ For normal day-to-day use, `--build` is not always necessary:
 docker compose up -d
 ```
 
-Use `--build` when the SMART EHR Launcher source/configuration has
-changed, or for a teammate's first setup.
+Use `--build` when the SMART EHR Launcher, custom SMART launcher, or
+Docker configuration has changed, and for a teammate's first setup.
 
 ## 11. Stop the Project
 
@@ -368,6 +429,26 @@ Verify that HAPI FHIR contains the required `Patient` and `Practitioner`
 resources and that the SMART proxy is pointing to the local HAPI FHIR
 server.
 
+### Patient login opens but SMART authorization fails
+
+Make sure the custom `smart-launcher` image was rebuilt after pulling
+the latest project changes:
+
+``` bash
+cd hapi_fhir_backend_package
+docker compose up -d --build smart-launcher
+```
+
+Also make sure the frontend is running on port 3000 because the patient
+SMART flow redirects back to `/smart-callback`.
+
+### Patient login succeeds but the health record is unavailable
+
+The patient context returned by SMART must refer to a Patient resource
+that exists in the same local HAPI FHIR server used by MindStep. Use a
+patient from the local patient list rather than an unrelated external
+SMART test dataset.
+
 ### Teammate does not have the SMART Docker images
 
 They should not copy containers from another computer. From
@@ -377,8 +458,8 @@ They should not copy containers from another computer. From
 docker compose up -d --build
 ```
 
-Docker pulls public images and builds the local EHR Launcher image from
-the repository.
+Docker pulls required public base images and builds the local EHR
+Launcher and custom SMART launcher from the repository.
 
 ## 13. Security Notes
 
@@ -387,3 +468,6 @@ the repository.
 -   Revoke keys that have been exposed.
 -   The current Docker/FHIR/SMART configuration is intended for local
     development and demonstration, not production deployment.
+-   The patient login flow is simulated. It does not provide production
+    identity verification, account management, password security, or a
+    production OAuth/OIDC authorization service.
